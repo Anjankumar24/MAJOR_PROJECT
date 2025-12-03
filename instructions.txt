@@ -1,0 +1,16 @@
+The following packages need to be installed before running the code. 
+ run pip install on each of the packages in terminal. 
+ if pip doesnt exist, first intsall python and then run pip install on each of  the packages below. 
+streamlit
+pandas
+numpy
+scikit-learn
+scipy
+matplotlib
+
+for example for streamlit. 
+pip install streamlit
+run similar commands in your project terminalor venv created for the project. 
+
+or run the below commands in bash.
+pip install -r requirements.txt

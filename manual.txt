@@ -1,0 +1,108 @@
+Project Theory & Methodology Report
+
+Project Title: Compressor Blade Design Optimization using Artificial Intelligence
+Team Members: Anjan Kumar N, Prerana DS, Lavani C, Tejaswini H
+Institution: ACS College of Engineering, Bengaluru
+
+1. Introduction
+
+In aerospace engineering, designing the perfect compressor blade for a jet engine is a very difficult task. Traditionally, engineers use Computational Fluid Dynamics (CFD) to test thousands of blade shapes. But CFD is very slow; one simulation can take hours.
+
+Our project solves this problem by using Artificial Intelligence (AI). We created a system that can design an optimized blade in seconds instead of weeks. To do this, we used three main technologies:
+
+Genetic Algorithms (GA)
+
+Surrogate Modeling (Neural Networks)
+
+Cascade Aerodynamics (2D to 3D Conversion)
+
+This report explains these concepts in simple terms and how we applied them.
+
+2. What is a Genetic Algorithm (GA)?
+
+A Genetic Algorithm is an optimization method inspired by Charles Darwin’s Theory of Natural Selection. Basically, it is "Survival of the Fittest" but for computer code.
+
+How it works (Simple Explanation):
+
+Imagine you want to find the best blade shape, but you don't know the math formula for it.
+
+Population (The Start): The computer randomly creates 20 different blade shapes. Most of them will be bad, but some might be okay.
+
+Evaluation (The Test): The AI tests each blade to see how efficient it is (Lift/Drag ratio).
+
+Selection (The Survival): It throws away the bad blades and keeps the top 5 best ones.
+
+Crossover (Reproduction): It takes the "DNA" (shape parameters) of the best blades and mixes them together to create new "children" blades.
+
+Mutation (Random Change): Just like in nature, it randomly changes a small part of the shape (like making it slightly thicker) to see if it helps.
+
+Iteration: This process repeats for many generations (e.g., 50 times) until the "Perfect Blade" is born.
+
+In our project: We used a specific type of GA called Differential Evolution to evolve the blade profile.
+
+3. What is a Surrogate Model?
+
+Running a CFD simulation for every single blade in the Genetic Algorithm would take too long (years). So, we used a Surrogate Model.
+
+Simple Explanation:
+
+Think of CFD as a "Strict Professor" who takes 5 hours to grade your exam. Think of a Surrogate Model as a "Smart Teaching Assistant" who has memorized the Professor's grading style.
+
+Instead of asking the Professor (CFD) every time, we ask the Assistant (AI).
+
+The Assistant gives us the answer in milliseconds.
+
+It might not be 100% perfect, but it is 99% accurate and millions of times faster.
+
+In our project:
+We trained a Multi-Layer Perceptron (MLP) Neural Network. We showed it 50,000 examples of airfoils and their performance (from the NREL database). Now, it can predict the Lift and Drag of any new shape instantly without running Ansys.
+
+4. Methodology: From 2D Airfoils to 3D Compressor Blades
+
+One challenge we faced was that our training data (NREL) is for 2D Airfoils (like wind turbine cross-sections), but we needed to design a 3D Compressor Blade for a jet engine.
+
+We solved this using Aerodynamic Theory.
+
+Step 1: The "Physics Proxy" (Lift = Pressure Rise)
+
+A compressor blade works by pushing air backwards to squeeze it. The force that pushes the air is Lift.
+
+Therefore, a blade with High Lift creates High Pressure Rise.
+
+Our AI optimizes the 2D shape to maximize Lift ($C_l$) and minimize Drag ($C_d$). This mathematically ensures the blade will be a good compressor.
+
+Step 2: The Cascade Correction (Solidity)
+
+In a wind turbine, blades are far apart. In a jet engine, blades are packed very close together. They interfere with each other. This is called the Cascade Effect.
+To fix this, we used a formula called Weinig’s Lattice Coefficient:
+
+$$C_{l,cascade} = C_{l,isolated} \times \frac{2}{\pi \sigma}$$
+
+Where $\sigma$ (Solidity) is the ratio of the blade chord to the spacing. This equation "corrects" the lift value to account for the crowded environment inside the engine.
+
+Step 3: The 3D Generation (Stacking)
+
+A 3D blade is just a 2D profile stacked on top of itself, but with Twist and Taper.
+
+Twist: The air speed is faster at the tip of the blade than at the root. To catch the air smoothly at all heights, we twist the blade (e.g., 30 degrees).
+
+Taper: We make the blade thinner at the tip to reduce weight and stress.
+
+Final Output:
+Our Python code takes the AI-optimized 2D curve, stacks it 25 times, applies the twist and taper mathematically, and exports the X, Y, Z coordinates. This creates a perfect 3D Compressor Blade ready for Ansys.
+
+5. The Nested Optimizer Framework
+
+A unique feature of this project is the Nested Optimization strategy. This means we have a "Loop inside a Loop."
+
+How it works in our model:
+
+Outer Loop : This is the Genetic Algorithm (Differential Evolution). It is in charge of finding the best shape. It keeps asking, "Is this shape good? How about this one?"
+
+Inner Loop : Inside every single question the Genetic Algorithm asks, the Surrogate Model (Neural Network) runs a calculation. It instantly predicts the performance ($C_l, C_d$) and applies the Cascade Correction math.
+
+Instead of running a separate optimization for the Neural Network and another for the Blade Shape, we "nest" the prediction inside the search. This allows the algorithm to evolve the shape in real-time based on instant feedback from the Neural Network. This is what makes the tool so fast compared to traditional methods.
+
+6. Conclusion
+
+By combining Genetic Algorithms (for search), Surrogate Modeling (for speed), and Cascade Physics (for accuracy), we built a tool that can design a high-efficiency compressor blade in minutes. This approach saves computational resources and provides a strong starting point for detailed aerospace design.
